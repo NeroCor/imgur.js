@@ -5,6 +5,6 @@ export default {
     buildOptions: (apiUrl, path, method, body = {}) => {
         return { apiUrl, path, method, body };
     },
-    bearer: ''
+    bearer: '',
+    additionalHeaders: {}
 };
-
