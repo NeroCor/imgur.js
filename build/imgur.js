@@ -12,7 +12,8 @@
 
             return { apiUrl: apiUrl, path: path, method: method, body: body };
         },
-        bearer: ''
+        bearer: '',
+        additionalHeaders: {}
     };
 
     var imgurAPICall = function imgurAPICall(options) {
@@ -28,7 +29,7 @@
             authToken = 'Bearer ' + utils.bearer;
         }
 
-        return request[options.method](options.apiUrl + '/' + options.path).send(options.body).set('Authorization', authToken).promise();
+        return request[options.method](options.apiUrl + '/' + options.path).send(options.body).set('Authorization', authToken).set(utils.additionalHeaders).promise();
     };
 
     var endpoint = function endpoint(options) {
