@@ -1,5 +1,5 @@
 { "name": "imgur",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Imgur JavaScript API library",
   "keywords": [
     "imgur",
