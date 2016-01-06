@@ -16,16 +16,6 @@
   },
   "bugs:": "https://github.com/imgur/imgur.js/issues",
   "main": "build/imgur.js",
-  "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "stage": 0
-        }
-      ]
-    ]
-  },
   "scripts": {
     "test": "gulp",
     "test-browser": "gulp test-browser",
