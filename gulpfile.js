@@ -91,7 +91,6 @@ gulp.task('browserify', function() {
     var bundler = browserify(allFiles);
     bundler.transform(babelify.configure({
         sourceMapRelative: __dirname + '/src',
-        optional: ['es7.asyncFunctions'],
         blacklist: ['useStrict']
     }));
     return bundler.bundle()
