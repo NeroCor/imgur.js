@@ -16,11 +16,6 @@
         additionalHeaders: {}
     };
 
-    function foo() {
-        Promise.resolve();
-        console.log('done');
-    }
-
     var imgurAPICall = function imgurAPICall(options) {
         ['method', 'apiUrl', 'path', 'body'].forEach(function (option) {
             if (!options[option]) {
