@@ -14,9 +14,18 @@ export default function(options) {
         authToken = `Bearer ${utils.bearer}`;
     }
 
-    return request[options.method](`${options.apiUrl}/${options.path}`)
+    var result = request[options.method](`${options.apiUrl}/${options.path}`)
         .send(options.body)
         .set('Authorization', authToken)
         .set(utils.additionalHeaders)
         .promise();
+    result.__requestData__ = {
+        method: options.method,
+        additionalHeaders: utils.additionalHeaders,
+        authToken: authToken,
+        body: options.body,
+        apiURL: options.apiUrl,
+        path: options.path
+    };
+    return result;
 };
