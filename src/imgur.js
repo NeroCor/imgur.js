@@ -3,7 +3,13 @@ import imageEndpoint from './endpoints/image';
 import albumEndpoint from './endpoints/album';
 import oauth2Endpoint from './endpoints/oauth2';
 import topicsEndpoint from './endpoints/topics';
-import galleryEndpoint from './endpoints/gallery';
+import {
+    gallery,
+    subreddit,
+    tag,
+    search,
+    topic,
+} from './endpoints/gallery';
 import commentEndpoint from './endpoints/comment';
 import utils from './utils.js';
 
@@ -33,7 +39,11 @@ export default function(clientKey, bearerKey) {
         album: albumEndpoint,
         oauth2: oauth2Endpoint,
         topics: topicsEndpoint,
-        gallery: galleryEndpoint,
+        gallery,
+        subreddit,
+        tag,
+        search,
+        topic,
         comment: commentEndpoint,
         setUtil,
         getUtil

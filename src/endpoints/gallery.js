@@ -2,7 +2,7 @@ import endpoint from '../endpoint';
 import utils from '../utils';
 import galleryPostEndpoint from '../endpoints/gallery/post';
 
-export default endpoint({
+export const gallery = endpoint({
     path: 'gallery',
     apiUrl: `${utils.API_URL}/${utils.API_VERSION}`,
     get(section='hot', sort='viral', page=0, showViral=true) {
@@ -13,3 +13,25 @@ export default endpoint({
     },
     post: galleryPostEndpoint
 });
+
+function galleryEndpoint(windowType, endpointPath) {
+    return endpoint({
+        path: `gallery/${endpointPath}`,
+        apiUrl: `${utils.API_URL}/${utils.API_VERSION}`,
+        get(topic, sort, page, window = windowType) {
+            const requestPath = `${this.path}/${topic}/${sort}/${window}/${page}`;
+            const options = utils.buildOptions(this.apiUrl, requestPath, 'get');
+
+            return this.imgurAPICall(options);
+        },
+        post: galleryPostEndpoint,
+    });
+}
+
+const WEEK = 'week';
+const ALL = 'all';
+export const subreddit = galleryEndpoint(WEEK, 'r');
+export const tag = galleryEndpoint(WEEK, 't');
+export const search = galleryEndpoint(ALL, 'search');
+export const topic = galleryEndpoint(ALL, 'topic');
+

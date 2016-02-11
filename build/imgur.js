@@ -190,7 +190,7 @@
         }))
     }));
 
-    var galleryEndpoint = endpoint({
+    var gallery = endpoint({
         path: 'gallery',
         apiUrl: utils.API_URL + '/' + utils.API_VERSION,
         get: function get() {
@@ -206,6 +206,29 @@
         },
         post: galleryPostEndpoint
     });
+
+    function galleryEndpoint(windowType, endpointPath) {
+        return endpoint({
+            path: 'gallery/' + endpointPath,
+            apiUrl: utils.API_URL + '/' + utils.API_VERSION,
+            get: function get(topic, sort, page) {
+                var window = arguments.length <= 3 || arguments[3] === undefined ? windowType : arguments[3];
+
+                var requestPath = this.path + '/' + topic + '/' + sort + '/' + window + '/' + page;
+                var options = utils.buildOptions(this.apiUrl, requestPath, 'get');
+
+                return this.imgurAPICall(options);
+            },
+            post: galleryPostEndpoint
+        });
+    }
+
+    var WEEK = 'week';
+    var ALL = 'all';
+    var subreddit = galleryEndpoint(WEEK, 'r');
+    var tag = galleryEndpoint(WEEK, 't');
+    var search = galleryEndpoint(ALL, 'search');
+    var topic = galleryEndpoint(ALL, 'topic');
 
     var commentEndpoint = endpoint({
         path: 'comment',
@@ -316,7 +339,11 @@
             album: albumEndpoint,
             oauth2: oauth2Endpoint,
             topics: topicsEndpoint,
-            gallery: galleryEndpoint,
+            gallery: gallery,
+            subreddit: subreddit,
+            tag: tag,
+            search: search,
+            topic: topic,
             comment: commentEndpoint,
             setUtil: setUtil,
             getUtil: getUtil
