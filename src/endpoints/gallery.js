@@ -14,9 +14,9 @@ export const gallery = endpoint({
     post: galleryPostEndpoint
 });
 
-function galleryEndpoint(windowType, endpoint) {
-    return {
-        path: `gallery/${endpoint}`,
+function galleryEndpoint(windowType, endpointPath) {
+    return endpoint({
+        path: `gallery/${endpointPath}`,
         apiUrl: `${utils.API_URL}/${utils.API_VERSION}`,
         get(topic, sort, page, window = windowType) {
             const requestPath = `${this.path}/${topic}/${sort}/${window}/${page}`;
@@ -25,13 +25,13 @@ function galleryEndpoint(windowType, endpoint) {
             return this.imgurAPICall(options);
         },
         post: galleryPostEndpoint,
-    };
+    });
 }
 
 const WEEK = 'week';
 const ALL = 'all';
-export const subreddit = endpoint(galleryEndpoint(WEEK, 'r'));
-export const tag = endpoint(galleryEndpoint(WEEK, 't'));
-export const search = endpoint(galleryEndpoint(ALL, 'search'));
-export const topic = endpoint(galleryEndpoint(ALL, 'topic'));
+export const subreddit = galleryEndpoint(WEEK, 'r');
+export const tag = galleryEndpoint(WEEK, 't');
+export const search = galleryEndpoint(ALL, 'search');
+export const topic = galleryEndpoint(ALL, 'topic');
 
