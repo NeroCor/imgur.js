@@ -32,14 +32,14 @@
         return request[options.method](options.apiUrl + '/' + options.path).send(options.body).set('Authorization', authToken).set(utils.additionalHeaders).promise();
     };
 
-    var endpoint = function endpoint(options) {
+    var _endpoint = function _endpoint(options) {
         options.imgurAPICall = imgurAPICall.bind(options);
         options.apiUrl = options.apiUrl || utils.API_URL + '/' + utils.API_VERSION;
 
         return options;
     };
 
-    var imageEndpoint = endpoint({
+    var imageEndpoint = _endpoint({
         path: 'image',
         apiUrl: utils.API_URL + '/' + utils.API_VERSION,
         get: function get(hash) {
@@ -49,7 +49,7 @@
         }
     });
 
-    var albumEndpoint = endpoint({
+    var albumEndpoint = _endpoint({
         path: 'album',
         apiUrl: utils.API_URL + '/' + utils.API_VERSION,
         get: function get(hash) {
@@ -59,7 +59,7 @@
         }
     });
 
-    var oauth2Endpoint = endpoint({
+    var oauth2Endpoint = _endpoint({
         path: 'oauth2',
         apiUrl: utils.API_URL,
         get: function get(responseType) {
@@ -81,7 +81,7 @@
         }
     });
 
-    var topicsEndpoint = endpoint({
+    var topicsEndpoint = _endpoint({
         path: 'topics',
         apiUrl: utils.API_URL + '/' + utils.API_VERSION,
         get: function get(topicId) {
@@ -122,7 +122,7 @@
         return result;
     }
 
-    var galleryPostEndpoint = endpoint(extend({}, postOptions, {
+    var galleryPostEndpoint = _endpoint(extend({}, postOptions, {
         REASON_DOES_NOT_BELONG_ON_IMGUR: 1,
         get: function get(hash) {
             var path = this.path + '/' + hash;
@@ -178,7 +178,7 @@
 
             return this.imgurAPICall(options);
         },
-        comments: endpoint(extend({}, postOptions, {
+        comments: _endpoint(extend({}, postOptions, {
             get: function get(hash) {
                 var sort = arguments.length <= 1 || arguments[1] === undefined ? 'best' : arguments[1];
 
@@ -190,7 +190,7 @@
         }))
     }));
 
-    var galleryEndpoint = endpoint({
+    var gallery = _endpoint({
         path: 'gallery',
         apiUrl: utils.API_URL + '/' + utils.API_VERSION,
         get: function get() {
@@ -207,7 +207,30 @@
         post: galleryPostEndpoint
     });
 
-    var commentEndpoint = endpoint({
+    function galleryEndpoint(windowType, endpoint) {
+        return {
+            path: 'gallery/' + endpoint,
+            apiUrl: utils.API_URL + '/' + utils.API_VERSION,
+            get: function get(topic, sort, page) {
+                var window = arguments.length <= 3 || arguments[3] === undefined ? windowType : arguments[3];
+
+                var requestPath = this.path + '/' + topic + '/' + sort + '/' + window + '/' + page;
+                var options = utils.buildOptions(this.apiUrl, requestPath, 'get');
+
+                return this.imgurAPICall(options);
+            },
+            post: galleryPostEndpoint
+        };
+    }
+
+    var WEEK = 'week';
+    var ALL = 'all';
+    var subreddit = _endpoint(galleryEndpoint(WEEK, 'r'));
+    var tag = _endpoint(galleryEndpoint(WEEK, 't'));
+    var search = _endpoint(galleryEndpoint(ALL, 'search'));
+    var topic = _endpoint(galleryEndpoint(ALL, 'topic'));
+
+    var commentEndpoint = _endpoint({
         path: 'comment',
         apiUrl: utils.API_URL + '/' + utils.API_VERSION,
         REASON_DOES_NOT_BELONG_ON_IMGUR: 1,
@@ -316,7 +339,11 @@
             album: albumEndpoint,
             oauth2: oauth2Endpoint,
             topics: topicsEndpoint,
-            gallery: galleryEndpoint,
+            gallery: gallery,
+            subreddit: subreddit,
+            tag: tag,
+            search: search,
+            topic: topic,
             comment: commentEndpoint,
             setUtil: setUtil,
             getUtil: getUtil
