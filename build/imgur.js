@@ -190,6 +190,8 @@
         }))
     }));
 
+    var SEARCH = 'search';
+
     var gallery = endpoint({
         path: 'gallery',
         apiUrl: utils.API_URL + '/' + utils.API_VERSION,
@@ -215,6 +217,11 @@
                 var window = arguments.length <= 3 || arguments[3] === undefined ? windowType : arguments[3];
 
                 var requestPath = this.path + '/' + topic + '/' + sort + '/' + window + '/' + page;
+
+                if (endpointPath === SEARCH) {
+                    requestPath = this.path + '/' + sort + '/' + window + '/' + page + '?q_all=' + topic;
+                }
+
                 var options = utils.buildOptions(this.apiUrl, requestPath, 'get');
 
                 return this.imgurAPICall(options);
@@ -227,7 +234,7 @@
     var ALL = 'all';
     var subreddit = galleryEndpoint(WEEK, 'r');
     var tag = galleryEndpoint(WEEK, 't');
-    var search = galleryEndpoint(ALL, 'search');
+    var search = galleryEndpoint(ALL, SEARCH);
     var topic = galleryEndpoint(ALL, 'topic');
 
     var commentEndpoint = endpoint({
