@@ -191,6 +191,7 @@
     }));
 
     var SEARCH = 'search';
+    var RANDOM = 'random/random';
 
     var gallery = endpoint({
         path: 'gallery',
@@ -216,10 +217,18 @@
             get: function get(topic, sort, page) {
                 var window = arguments.length <= 3 || arguments[3] === undefined ? windowType : arguments[3];
 
-                var requestPath = this.path + '/' + topic + '/' + sort + '/' + window + '/' + page;
+                var requestPath = undefined;
 
-                if (endpointPath === SEARCH) {
-                    requestPath = this.path + '/' + sort + '/' + window + '/' + page + '?q_all=' + topic;
+                switch (endpointPath) {
+                    case SEARCH:
+                        requestPath = this.path + '/' + sort + '/' + window + '/' + page + '?q_all=' + topic;
+                        break;
+                    case RANDOM:
+                        requestPath = this.path + '/' + page;
+                        break;
+                    default:
+                        requestPath = this.path + '/' + topic + '/' + sort + '/' + window + '/' + page;
+                        break;
                 }
 
                 var options = utils.buildOptions(this.apiUrl, requestPath, 'get');
@@ -236,6 +245,7 @@
     var tag = galleryEndpoint(WEEK, 't');
     var search = galleryEndpoint(ALL, SEARCH);
     var topic = galleryEndpoint(ALL, 'topic');
+    var random = galleryEndpoint(null, RANDOM);
 
     var commentEndpoint = endpoint({
         path: 'comment',
@@ -351,6 +361,7 @@
             tag: tag,
             search: search,
             topic: topic,
+            random: random,
             comment: commentEndpoint,
             setUtil: setUtil,
             getUtil: getUtil
