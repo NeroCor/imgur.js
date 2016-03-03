@@ -9,6 +9,7 @@ import {
     tag,
     search,
     topic,
+    random,
 } from './endpoints/gallery';
 import commentEndpoint from './endpoints/comment';
 import utils from './utils.js';
@@ -44,6 +45,7 @@ export default function(clientKey, bearerKey) {
         tag,
         search,
         topic,
+        random,
         comment: commentEndpoint,
         setUtil,
         getUtil
