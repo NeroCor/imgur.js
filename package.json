@@ -25,7 +25,7 @@
   "license": "ISC",
   "dependencies": {
     "bluebird": "2.10.2",
-    "superagent": "*",
+    "superagent": "1.8.2",
     "superagent-bluebird-promise": "2.0.2"
     },
   "devDependencies": {
