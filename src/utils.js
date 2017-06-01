@@ -8,3 +8,17 @@ export default {
     bearer: '',
     additionalHeaders: {}
 };
+
+export function extend() {
+  var key, obj, result = {}, i;
+  for (i = 0; i <= arguments.length; i++) {
+    obj = arguments[i];
+    for (key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        result[key] = obj[key];
+      } else {
+      }
+    }
+  }
+  return result;
+}

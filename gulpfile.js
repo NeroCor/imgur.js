@@ -86,7 +86,7 @@ gulp.task('build', ['lint-src', 'clean'], function(done) {
 
 // Bundle our app for our unit tests
 gulp.task('browserify', function() {
-    var testFiles = glob.sync('./test/endpoints/*.js');
+    var testFiles = glob.sync(['./test/endpoints/*.js', './test/util/*.js']);
     var allFiles = ['./test/setup/browserify.js'].concat(testFiles);
     var bundler = browserify(allFiles);
     bundler.transform(babelify.configure({
@@ -105,7 +105,7 @@ gulp.task('browserify', function() {
 });
 
 function test() {
-    return gulp.src(['test/setup/node.js', 'test/endpoints/*.js'], {read: false})
+    return gulp.src(['test/setup/node.js', 'test/endpoints/*.js', './test/util/*.js'], {read: false})
         .pipe($.mocha({reporter: 'spec', globals: config.mochaGlobals}));
 }
 

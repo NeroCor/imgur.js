@@ -16,6 +16,22 @@
         additionalHeaders: {}
     };
 
+    function extend() {
+        var key,
+            obj,
+            result = {},
+            i;
+        for (i = 0; i <= arguments.length; i++) {
+            obj = arguments[i];
+            for (key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    result[key] = obj[key];
+                } else {}
+            }
+        }
+        return result;
+    }
+
     var imgurAPICall = function imgurAPICall(options) {
         ['method', 'apiUrl', 'path', 'body'].forEach(function (option) {
             if (!options[option]) {
@@ -101,28 +117,12 @@
         }
     });
 
-    var postOptions = {
+    var galleryPostEndpoint__postOptions = {
         path: 'gallery',
         apiUrl: utils.API_URL + '/' + utils.API_VERSION
     };
 
-    function extend() {
-        var key,
-            obj,
-            result = {},
-            i;
-        for (i = 0; i <= arguments.length; i++) {
-            obj = arguments[i];
-            for (key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    result[key] = obj[key];
-                } else {}
-            }
-        }
-        return result;
-    }
-
-    var galleryPostEndpoint = endpoint(extend({}, postOptions, {
+    var galleryPostEndpoint = endpoint(extend({}, galleryPostEndpoint__postOptions, {
         REASON_DOES_NOT_BELONG_ON_IMGUR: 1,
         get: function get(hash) {
             var path = this.path + '/' + hash;
@@ -178,7 +178,7 @@
 
             return this.imgurAPICall(options);
         },
-        comments: endpoint(extend({}, postOptions, {
+        comments: endpoint(extend({}, galleryPostEndpoint__postOptions, {
             get: function get(hash) {
                 var sort = arguments.length <= 1 || arguments[1] === undefined ? 'best' : arguments[1];
 
@@ -188,6 +188,26 @@
                 return this.imgurAPICall(options);
             }
         }))
+    }));
+
+    var subredditPostEndpoint__postOptions = {
+        path: 'gallery/r',
+        apiUrl: utils.API_URL + '/' + utils.API_VERSION
+    };
+
+    var subredditPostEndpoint = endpoint(extend({}, subredditPostEndpoint__postOptions, {
+        get: function get(hash, subreddit) {
+            if (!hash) {
+                throw new Error('hash must be specified');
+            }
+            if (!subreddit) {
+                throw new Error('subreddit must be specified');
+            }
+            var path = this.path + '/' + subreddit + '/' + hash;
+            var options = utils.buildOptions(this.apiUrl, path, 'get');
+
+            return this.imgurAPICall(options);
+        }
     }));
 
     var SEARCH = 'search';
@@ -210,7 +230,7 @@
         post: galleryPostEndpoint
     });
 
-    function galleryEndpoint(windowType, endpointPath) {
+    function galleryEndpoint(windowType, endpointPath, postEndpoint) {
         return endpoint({
             path: 'gallery/' + endpointPath,
             apiUrl: utils.API_URL + '/' + utils.API_VERSION,
@@ -235,17 +255,17 @@
 
                 return this.imgurAPICall(options);
             },
-            post: galleryPostEndpoint
+            post: postEndpoint
         });
     }
 
     var WEEK = 'week';
     var ALL = 'all';
-    var subreddit = galleryEndpoint(WEEK, 'r');
-    var tag = galleryEndpoint(WEEK, 't');
-    var search = galleryEndpoint(ALL, SEARCH);
-    var topic = galleryEndpoint(ALL, 'topic');
-    var random = galleryEndpoint(null, RANDOM);
+    var subreddit = galleryEndpoint(WEEK, 'r', subredditPostEndpoint);
+    var tag = galleryEndpoint(WEEK, 't', galleryPostEndpoint);
+    var search = galleryEndpoint(ALL, SEARCH, galleryPostEndpoint);
+    var topic = galleryEndpoint(ALL, 'topic', galleryPostEndpoint);
+    var random = galleryEndpoint(null, RANDOM, galleryPostEndpoint);
 
     var commentEndpoint = endpoint({
         path: 'comment',

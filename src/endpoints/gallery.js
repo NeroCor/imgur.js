@@ -1,6 +1,7 @@
 import endpoint from '../endpoint';
 import utils from '../utils';
 import galleryPostEndpoint from '../endpoints/gallery/post';
+import subredditPostEndpoint from '../endpoints/subreddit/post';
 const SEARCH = 'search';
 const RANDOM = 'random/random';
 
@@ -16,7 +17,7 @@ export const gallery = endpoint({
     post: galleryPostEndpoint
 });
 
-function galleryEndpoint(windowType, endpointPath) {
+function galleryEndpoint(windowType, endpointPath, postEndpoint) {
     return endpoint({
         path: `gallery/${endpointPath}`,
         apiUrl: `${utils.API_URL}/${utils.API_VERSION}`,
@@ -39,15 +40,15 @@ function galleryEndpoint(windowType, endpointPath) {
 
             return this.imgurAPICall(options);
         },
-        post: galleryPostEndpoint,
+        post: postEndpoint,
     });
 }
 
 const WEEK = 'week';
 const ALL = 'all';
-export const subreddit = galleryEndpoint(WEEK, 'r');
-export const tag = galleryEndpoint(WEEK, 't');
-export const search = galleryEndpoint(ALL, SEARCH);
-export const topic = galleryEndpoint(ALL, 'topic');
-export const random = galleryEndpoint(null, RANDOM);
+export const subreddit = galleryEndpoint(WEEK, 'r', subredditPostEndpoint);
+export const tag = galleryEndpoint(WEEK, 't', galleryPostEndpoint);
+export const search = galleryEndpoint(ALL, SEARCH, galleryPostEndpoint);
+export const topic = galleryEndpoint(ALL, 'topic', galleryPostEndpoint);
+export const random = galleryEndpoint(null, RANDOM, galleryPostEndpoint);
 

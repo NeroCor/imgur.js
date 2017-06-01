@@ -1,24 +1,10 @@
 import endpoint from '../../endpoint';
-import utils from '../../utils';
+import utils, { extend } from '../../utils';
 
 const postOptions = {
     path: 'gallery',
     apiUrl: `${utils.API_URL}/${utils.API_VERSION}`
 };
-
-function extend() {
-  var key, obj, result = {}, i;
-  for (i = 0; i <= arguments.length; i++) {
-    obj = arguments[i];
-    for (key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        result[key] = obj[key];
-      } else {
-      }
-    }
-  }
-  return result;
-}
 
 export default endpoint(extend({}, postOptions, {
     REASON_DOES_NOT_BELONG_ON_IMGUR: 1,
